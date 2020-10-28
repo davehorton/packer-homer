@@ -9,7 +9,7 @@ sudo apt-get install -y postgresql-12
 sudo systemctl daemon-reload
 sudo systemctl enable postgresql
 sudo systemctl restart postgresql
-cd /tmp
+
 sudo -u postgres psql -c "CREATE DATABASE homer_config;"
 sudo -u postgres psql -c "CREATE DATABASE homer_data;"
 sudo -u postgres psql -c "CREATE ROLE ${DB_USER} WITH SUPERUSER LOGIN PASSWORD '$DB_PASS';"
