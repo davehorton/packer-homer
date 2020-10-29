@@ -1,6 +1,9 @@
 #!/bin/bash
-DB_USER=$1
-DB_PASS=$2
+
+if [ "$1" != "yes" ]; then return;  fi
+
+DB_USER=$2
+DB_PASS=$3
 
 wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O- | sudo apt-key add -
 sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" > /etc/apt/sources.list.d/postgresql.list'

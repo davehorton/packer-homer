@@ -6,10 +6,10 @@
     "instance_type": "t2.medium",
     "homer_user": "homer_user",
     "homer_password": "XcapJTqy11LnsYRtxXGPTYQkAnI",
-    "homer_host": "localhost",
-    "hep_port": "9060",
-    "chronograf_listen_port": "8888",
-    "install_influxdb":  "yes"
+    "install_influxdb":  "yes",
+    "install_homer":  "yes",
+    "influxdb_ip":  "127.0.0.1",
+    "tag_name": "homer"
   },
   "builders": [{
     "type": "amazon-ebs",
@@ -25,7 +25,7 @@
     },
     "instance_type": "{{user `instance_type`}}",
     "ssh_username": "{{user `ssh_username`}}",
-    "ami_name": "homer-{{isotime |clean_resource_name }}",
+    "ami_name": "homer-{{isotime | clean_resource_name }}",
     "ami_description": "{{user `ami_description`}}",
     "launch_block_device_mappings": [
       {
@@ -41,10 +41,10 @@
       }
     },
     "tags": {
-      "Name": "homer"
+      "Name": "{{user `tag_name`}}"
     },
     "run_tags": {
-      "Name": "homer-build"
+      "Name": "homer-ami-building"
     }
   }],
   "provisioners": [
@@ -68,18 +68,28 @@
     },
     {
       "type": "shell",
-      "execute_command": "chmod +x {{ .Path }}; sudo '{{ .Path }}' {{user `homer_user`}} {{user `homer_password`}}",
+      "execute_command": "chmod +x {{ .Path }}; sudo '{{ .Path }}' {{user `install_homer`}} {{user `homer_user`}} {{user `homer_password`}}",
       "script": "scripts/install_postgresql.sh"
     },
     {
       "type": "shell",
-      "execute_command": "chmod +x {{ .Path }}; sudo '{{ .Path }}' {{user `homer_user`}} {{user `homer_password`}}",
+      "execute_command": "chmod +x {{ .Path }}; sudo '{{ .Path }}' {{user `install_homer`}} {{user `homer_user`}} {{user `homer_password`}}",
       "script": "scripts/install_homer.sh"
+    },
+    {
+      "type": "shell",
+      "execute_command": "chmod +x {{ .Path }}; sudo '{{ .Path }}' {{user `install_homer`}} {{user `influxdb_ip`}}",
+      "script": "scripts/install_telegraf.sh"
     },
     {
       "type": "shell",
       "execute_command": "chmod +x {{ .Path }}; sudo '{{ .Path }}' {{user `install_influxdb`}}",
       "script": "scripts/install_influxdb.sh"
+    },
+    {
+      "type": "shell",
+      "execute_command": "chmod +x {{ .Path }}; sudo '{{ .Path }}' {{user `install_influxdb`}}",
+      "script": "scripts/install_grafana.sh"
     }
   ]
 }
