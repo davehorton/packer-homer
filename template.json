@@ -73,13 +73,13 @@
     },
     {
       "type": "shell",
-      "execute_command": "chmod +x {{ .Path }}; sudo '{{ .Path }}' {{user `install_homer`}} {{user `homer_user`}} {{user `homer_password`}}",
-      "script": "scripts/install_homer.sh"
+      "execute_command": "chmod +x {{ .Path }}; sudo '{{ .Path }}' {{user `install_homer`}} {{user `influxdb_ip`}}",
+      "script": "scripts/install_telegraf.sh"
     },
     {
       "type": "shell",
-      "execute_command": "chmod +x {{ .Path }}; sudo '{{ .Path }}' {{user `install_homer`}} {{user `influxdb_ip`}}",
-      "script": "scripts/install_telegraf.sh"
+      "execute_command": "chmod +x {{ .Path }}; sudo '{{ .Path }}' {{user `install_homer`}} {{user `homer_user`}} {{user `homer_password`}}",
+      "script": "scripts/install_homer.sh"
     },
     {
       "type": "shell",
