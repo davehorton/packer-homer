@@ -1,0 +1,67 @@
+{
+  "variables": {
+    "homer_user": "homer_user",
+    "homer_password": "XcapJTqy11LnsYRtxXGPTYQkAnI",
+    "install_influxdb":  "yes",
+    "install_homer":  "yes",
+    "influxdb_ip":  "127.0.0.1"
+  },
+
+"builders": [{
+  "type": "digitalocean",
+  "api_token": "yourkey",
+  "image": "debian-10-x64",
+  "region": "ams3",
+  "size": "s-1vcpu-1gb",
+  "ssh_username": "root",
+  "droplet_name": "Homer-7"
+  "snapshot_name": "Homer-7"
+}
+],
+
+ "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 1; done",
+        "sudo apt-get update",
+        "sudo apt-get -y install software-properties-common make cmake gcc g++ dirmngr sudo python3-dev \\",
+        "curl wget sed"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "files/",
+      "destination": "/tmp"
+    },
+    {
+      "type": "shell",
+      "script": "scripts/install_chrony.sh"
+    },
+    {
+      "type": "shell",
+      "execute_command": "chmod +x {{ .Path }}; sudo '{{ .Path }}' {{user `install_homer`}} {{user `homer_user`}} {{user `homer_password`}}",
+      "script": "scripts/install_postgresql.sh"
+    },
+    {
+      "type": "shell",
+      "execute_command": "chmod +x {{ .Path }}; sudo '{{ .Path }}' {{user `install_homer`}} {{user `influxdb_ip`}}",
+      "script": "scripts/install_telegraf.sh"
+    },
+    {
+      "type": "shell",
+      "execute_command": "chmod +x {{ .Path }}; sudo '{{ .Path }}' {{user `install_homer`}} {{user `homer_user`}} {{user `homer_password`}}",
+      "script": "scripts/install_homer.sh"
+    },
+    {
+      "type": "shell",
+      "execute_command": "chmod +x {{ .Path }}; sudo '{{ .Path }}' {{user `install_influxdb`}}",
+      "script": "scripts/install_influxdb.sh"
+    },
+    {
+      "type": "shell",
+      "execute_command": "chmod +x {{ .Path }}; sudo '{{ .Path }}' {{user `install_influxdb`}}",
+      "script": "scripts/install_grafana.sh"
+    }
+  ]
+ }
